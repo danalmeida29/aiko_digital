@@ -1,8 +1,6 @@
-// src/components/StatusIcon/index.tsx
 import React from 'react';
 import styles from './statusIcon.module.scss';
 
-// Definição dos estados e cores associadas
 export const getStatusColor = (statusId: string) => {
   switch (statusId) {
     case '0808344c-454b-4c36-89e8-d7687e692d57': // Operando
@@ -18,10 +16,12 @@ export const getStatusColor = (statusId: string) => {
 
 interface StatusIconProps {
   statusId: string;
+  width?: number; 
+  height?: number; 
 }
 
-export const StatusIcon: React.FC<StatusIconProps> = ({ statusId }) => {
+export const StatusIcon: React.FC<StatusIconProps> = ({ statusId, width = 25, height = 25 }) => {
   const statusColor = getStatusColor(statusId);
 
-  return <div className={styles.statusIcon} style={{ backgroundColor: statusColor }} />;
+  return <div className={styles.statusIcon} style={{ backgroundColor: statusColor, width: `${width}px`, height: `${height}px`}} />;
 };

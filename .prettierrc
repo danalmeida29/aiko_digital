@@ -3,6 +3,7 @@
     "trailingComma": "es5",      
     "semi": true,            
     "tabWidth": 2,              
-    "bracketSpacing": true       
+    "bracketSpacing": true ,  
+    "prettier": "prettier --write ."    
   }
   

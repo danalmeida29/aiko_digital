@@ -4,13 +4,20 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { StatusIcon } from './StatusIcon';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { Card } from './Card';
 
 
 const MapConatiner: React.FC = () => {
-  const position: [number, number] = [-23.55052, -46.633308]; // Exemplo: São Paulo
+  const listItems = [
+    { text: 'Operando', icon: <StatusIcon statusId={'0808344c-454b-4c36-89e8-d7687e692d57'} width={15} height={15} /> },
+    { text: 'Parado', icon: <StatusIcon statusId={'baff9783-84e8-4e01-874b-6fd743b875ad'} width={15} height={15} /> },
+    { text: 'Manutenção', icon: <StatusIcon statusId={'03b2d446-e3ba-4c82-8dc2-a5611fea6e1f'} width={15} height={15} /> },
+  ];
+
+  const position: [number, number] = [-23.55052, -46.633308]; 
   const statusId = '0808344c-454b-4c36-89e8-d7687e692d57';
 
-  // Configuração do ícone do marcador (corrige um bug do Leaflet no React)
+  
   const customIcon = new L.DivIcon({
     className: 'custom-marker-icon',
     html: renderToStaticMarkup(<StatusIcon statusId={statusId} />),
@@ -20,22 +27,24 @@ const MapConatiner: React.FC = () => {
   });
 
   return (
-    <MapContainer
-      center={position}
-      zoom={13}
-      style={{ height: '500px', width: '100%' }}
-    >
-      {/* Camada do mapa */}
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+    <div className="relative w-full h-[500px]">
 
-      {/* Marcador no mapa */}
-      <Marker position={position} icon={customIcon}>
-        <Popup>Equipamento em São Paulo</Popup>
-      </Marker>
-    </MapContainer>
+      <MapContainer
+        center={position}
+        zoom={13}
+        className="absolute inset-0 z-10"
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+
+        <Marker position={position} icon={customIcon}>
+          <Popup>Equipamento em São Paulo</Popup>
+        </Marker>
+      </MapContainer>
+
+      <div className="absolute bottom-2 left-2 p-2 z-50">
+        <Card listItems={listItems} size="w-40 p-4" fontSize="text-sm" />
+      </div>
+    </div>
   );
 };
 
