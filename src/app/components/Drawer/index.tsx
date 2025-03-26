@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { TextField, MenuItem, Select, FormControl, InputLabel, Typography, SelectChangeEvent } from '@mui/material';
+import {
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Typography,
+  SelectChangeEvent,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 export const Sidebar: React.FC = () => {
@@ -16,8 +24,10 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div className="w-1/4 h-full bg-gray-800 p-4 text-white fixed">
-      <Typography variant="h6" className="mb-4">Equipamentos</Typography>
-      
+      <Typography variant="h6" className="mb-4">
+        Equipamentos
+      </Typography>
+
       <div className="mb-4 border-none">
         <TextField
           fullWidth
@@ -27,16 +37,19 @@ export const Sidebar: React.FC = () => {
           InputProps={{
             startAdornment: <SearchIcon />,
           }}
-          className='bg-[#FAFAFA] rounded-md justify-center'
+          className="bg-[#FAFAFA] rounded-md justify-center"
         />
       </div>
 
       <div className="mb-4 border-none">
-        <FormControl fullWidth className='bg-[#FAFAFA] rounded-md justify-center'>
+        <FormControl
+          fullWidth
+          className="bg-[#FAFAFA] rounded-md justify-center"
+        >
           <InputLabel>Selecionar Modelo</InputLabel>
           <Select
             value={selectedOption}
-            onChange={handleSelectChange} 
+            onChange={handleSelectChange}
             label="Selecionar Modelo"
           >
             <MenuItem value="Modelo 1">Modelo 1</MenuItem>

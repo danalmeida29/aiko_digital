@@ -16,12 +16,25 @@ export const getStatusColor = (statusId: string) => {
 
 interface StatusIconProps {
   statusId: string;
-  width?: number; 
-  height?: number; 
+  width?: number;
+  height?: number;
 }
 
-export const StatusIcon: React.FC<StatusIconProps> = ({ statusId, width = 25, height = 25 }) => {
+export const StatusIcon: React.FC<StatusIconProps> = ({
+  statusId,
+  width = 25,
+  height = 25,
+}) => {
   const statusColor = getStatusColor(statusId);
 
-  return <div className={styles.statusIcon} style={{ backgroundColor: statusColor, width: `${width}px`, height: `${height}px`}} />;
+  return (
+    <div
+      className={styles.statusIcon}
+      style={{
+        backgroundColor: statusColor,
+        width: `${width}px`,
+        height: `${height}px`,
+      }}
+    />
+  );
 };
