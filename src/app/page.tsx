@@ -1,21 +1,41 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { Sidebar } from './components/Drawer';
+
 import LazyMap from './components/LazyMap';
-import { useMergedEquipmentData } from '../app/hooks/useMergedEquipmentData';
+import { ChartComponent } from "./components/ChartComponent";
+import { Sidebar } from './components/Sidebar';
 
 export default function Home() {
-  const { mergedData } = useMergedEquipmentData();
-  console.log('dados Mesclados:', mergedData);
-
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  
   return (
-    <div className="flex h-screen w-full">
-      <div className="col-span-4 h-full w-1/4">
-        <Sidebar />
+    <div className="flex sm:flex-row h-screen w-full">
+      <div className="col-span-4 h-full w-[58px] z-50">
+        <Sidebar 
+          searchTerm={searchTerm} 
+          setSearchTerm={setSearchTerm} 
+          setSelectedFilter={setSelectedFilter} 
+          setStartDate={setStartDate} 
+          setEndDate={setEndDate} 
+        />
       </div>
-      <div className=" felx-col col-span-3 h-full w-3/4">
-        <LazyMap />
+      <div className=" ml-0 felx-col col-span-3 h-full w-full z-10">
+        <div className="grid-col h-full">
+          <LazyMap 
+          searchTerm={searchTerm} 
+          selectedFilter={selectedFilter} 
+          startDate={startDate} 
+          endDate={endDate}
+          />
+          <div className=" flex-row">
+            <ChartComponent/>
+          </div>
+        </div>
       </div>
     </div>
   );
