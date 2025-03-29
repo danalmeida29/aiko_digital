@@ -51,3 +51,15 @@ export interface MergedEquipment {
   positions: Position[] | undefined;
   stateHistory: EquipmentStateHistory[];
 }
+
+
+//----------------------------------
+
+interface StateData {
+  date: string;
+}
+
+interface NewEquipmentState {
+  equipmentStateId: string;
+  [key: string]: StateData[];
+}

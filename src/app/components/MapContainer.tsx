@@ -6,7 +6,8 @@ import { StatusIcon } from './StatusIcon';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Card } from './Card';
 import { useMergedEquipmentData } from '../hooks/useMergedEquipmentData';
-import { formatDate, getStatusName } from '../utils/functionsUtils';
+import { getLatestPosition, filterMarkers, getStatusName, formatDate, processEquipment } from '../utils/functionsUtils';
+import { useSelectedId } from '../hooks/useSelectId';
 
 interface Marker {
   id: string;
@@ -18,7 +19,14 @@ interface Marker {
   statusAtual: string;
 }
 
-const MapConatiner: React.FC = () => {
+interface Props{
+  searchTerm: string,
+  selectedFilter: string[],
+  startDate?: Date;
+  endDate?: Date;
+}
+
+const MapConatiner: React.FC<Props> = ({ searchTerm, selectedFilter, startDate, endDate }) => {
   const listItems = [
     {
       text: 'Operando',
@@ -53,78 +61,21 @@ const MapConatiner: React.FC = () => {
   ];
 
   const { mergedData, loading, error } = useMergedEquipmentData();
-
+  const { getEquipmentData } = useSelectedId();
   const [markers, setMarkers] = useState<Marker[]>([]);
-
-  const getLatestPosition = (
-    positions?: { date: string; lat: number; lon: number }[]
-  ) => {
-    if (!positions || positions.length === 0) {
-      return null;
-    }
-    const latestPosition = positions.reduce((latest, current) => {
-      return new Date(current.date) > new Date(latest.date) ? current : latest;
-    });
-    // console.log("Última posição encontrada:", latestPosition);
-    return latestPosition;
-  };
 
   useEffect(() => {
     if (!loading && mergedData.length > 0) {
       const updatedMarkers = mergedData
-        .map((equipment) => {
-          const latestPosition = getLatestPosition(equipment.positions);
-
-          if (!latestPosition) return null;
-
-          // Encontra o status correspondente
-          const status = equipment.stateHistory?.[0];
-          let stateId = null;
-          let statusAtual =
-            'Sem dados sobre a localização atual do equipamento.';
-          let ultimaDataEstados = null;
-
-          if (status?.states) {
-            // Verifica se existe um estado com a mesma data
-            const matchingState = status.states.find(
-              (state) => state.date === latestPosition.date
-            );
-
-            if (matchingState) {
-              stateId = matchingState.equipmentStateId;
-              statusAtual = getStatusName(stateId);
-            } else {
-              const latestState = status.states.reduce((latest, current) =>
-                new Date(current.date) > new Date(latest.date)
-                  ? current
-                  : latest
-              );
-
-              if (latestState) {
-                stateId = latestState.equipmentStateId;
-                ultimaDataEstados = latestState.date;
-                statusAtual += ` Último estado registrado foi como: ${getStatusName(stateId)} em ${formatDate(ultimaDataEstados)} `;
-              }
-            }
-          }
-
-          return {
-            id: equipment.id,
-            name: equipment.name,
-            modelName: equipment.modelName,
-            status: stateId || '', // Adiciona o stateId aqui
-            position: [latestPosition.lat, latestPosition.lon],
-            date: latestPosition.date,
-            statusAtual,
-          };
-        })
+        .map((equipment) => processEquipment(equipment)) // Chama a função para processar cada equipamento
         .filter((marker) => marker !== null) as Marker[];
 
-      console.log('Marcadores com stateId:', updatedMarkers);
       setMarkers(updatedMarkers);
     }
   }, [mergedData, loading, error]);
 
+
+  const filteredMarkers = filterMarkers(markers, searchTerm, selectedFilter, startDate, endDate);
   const position: [number, number] = [-14.235, -51.9253];
 
   /**
@@ -140,7 +91,7 @@ const MapConatiner: React.FC = () => {
     });
 
   return (
-    <div className="relative w-full h-[500px]">
+    <div className="relative w-full h-1/2">
       <MapContainer
         center={position}
         zoom={5}
@@ -148,11 +99,14 @@ const MapConatiner: React.FC = () => {
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-        {markers.map((marker) => (
+        {filteredMarkers.map((marker) => (
           <Marker
             key={marker.id}
             position={marker.position}
             icon={customIcon(marker.status)}
+            eventHandlers={{
+              click: () => getEquipmentData(marker.id),
+            }}
           >
             <Popup>
               <div>
