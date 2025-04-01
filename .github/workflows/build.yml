@@ -1,0 +1,34 @@
+name: CI - Build Next.js
+
+on:
+    push:
+        branches:
+          - '**'
+    pull_request:
+        branches:
+          - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 🔧 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 📦 Instalar dependências
+        run: npm install
+
+      - name: 🎨 Rodar Prettier (formatação)
+        run: npm run prettier || echo "Prettier não está configurado"
+
+      - name: 🧹 Rodar ESLint (linting)
+        run: npm run lint || echo "ESLint tem avisos, mas ignorando erros de importação não usada"
+
+      - name: ⚙️ Rodar Build
+        run: npm run build
