@@ -6,8 +6,12 @@ import { StatusIcon } from './StatusIcon';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Card } from './Card';
 import { useMergedEquipmentData } from '../hooks/useMergedEquipmentData';
-import { getLatestPosition, filterMarkers, getStatusName, formatDate, processEquipment } from '../utils/functionsUtils';
-import { useSelectedId } from '../hooks/useSelectId';
+import {
+  filterMarkers,
+  formatDate,
+  processEquipment,
+} from '../utils/functionsUtils';
+import { useSelectedId } from '../context/SelectedIdContext';
 
 interface Marker {
   id: string;
@@ -19,14 +23,19 @@ interface Marker {
   statusAtual: string;
 }
 
-interface Props{
-  searchTerm: string,
-  selectedFilter: string[],
+interface Props {
+  searchTerm: string;
+  selectedFilter: string[];
   startDate?: Date;
   endDate?: Date;
 }
 
-const MapConatiner: React.FC<Props> = ({ searchTerm, selectedFilter, startDate, endDate }) => {
+const MapConatiner: React.FC<Props> = ({
+  searchTerm,
+  selectedFilter,
+  startDate,
+  endDate,
+}) => {
   const listItems = [
     {
       text: 'Operando',
@@ -67,19 +76,24 @@ const MapConatiner: React.FC<Props> = ({ searchTerm, selectedFilter, startDate, 
   useEffect(() => {
     if (!loading && mergedData.length > 0) {
       const updatedMarkers = mergedData
-        .map((equipment) => processEquipment(equipment)) // Chama a função para processar cada equipamento
+        .map((equipment) => processEquipment(equipment))
         .filter((marker) => marker !== null) as Marker[];
 
       setMarkers(updatedMarkers);
     }
   }, [mergedData, loading, error]);
 
-
-  const filteredMarkers = filterMarkers(markers, searchTerm, selectedFilter, startDate, endDate);
+  const filteredMarkers = filterMarkers(
+    markers,
+    searchTerm,
+    selectedFilter,
+    startDate,
+    endDate
+  );
   const position: [number, number] = [-14.235, -51.9253];
 
   /**
-   * customização dos icones
+   * customizaÃ§Ã£o dos icones
    */
   const customIcon = (statusId: string) =>
     new L.DivIcon({
@@ -115,7 +129,7 @@ const MapConatiner: React.FC<Props> = ({ searchTerm, selectedFilter, startDate, 
                 <strong>Modelo:</strong> {marker.modelName}
                 <br />
                 <strong>Status:</strong> {marker.statusAtual} <br />
-                <strong>Data da última Posição registrada:</strong>{' '}
+                <strong>Data da última posição registrada:</strong>{' '}
                 {formatDate(marker.date)}
               </div>
             </Popup>
