@@ -17,5 +17,4 @@ criar um .env com esses dados e url
 
 Confira o vídeo de apresentação do projeto no link abaixo:
 
-- [Ver vídeo no YouTube](https://youtu.be/seu-link-aqui) *(não listado)*
-- ou [Ver no Google Drive](https://drive.google.com/seu-link-aqui)
+- [Ver no Google Drive]((https://drive.google.com/drive/folders/1zs10i0HOADQRlm10ijf4K1m1F48Qg8ws?usp=drive_link)
