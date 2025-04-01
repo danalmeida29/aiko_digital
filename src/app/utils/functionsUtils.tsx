@@ -1,4 +1,4 @@
-import { MergedEquipment } from "../hooks/equipmentTypes";
+import { MergedEquipment } from '../hooks/equipmentTypes';
 
 interface Marker {
   id: string;
@@ -12,12 +12,15 @@ interface Marker {
 
 export const formatDate = (dateInput: Date | string) => {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-  
+
   return `${date.getUTCDate().toString().padStart(2, '0')}/${(
     date.getUTCMonth() + 1
   )
     .toString()
-    .padStart(2, '0')}/${date.getUTCFullYear()} ás ${date.getUTCHours().toString().padStart(2, '0')}:${date
+    .padStart(
+      2,
+      '0'
+    )}/${date.getUTCFullYear()} ás ${date.getUTCHours().toString().padStart(2, '0')}:${date
     .getUTCMinutes()
     .toString()
     .padStart(2, '0')}h`;
@@ -33,7 +36,9 @@ export const getStatusName = (id: string): string => {
   return statusMap[id] ?? 'Status desconhecido';
 };
 
-export const getLatestPosition = (positions?: { date: string; lat: number; lon: number }[]) => {
+export const getLatestPosition = (
+  positions?: { date: string; lat: number; lon: number }[]
+) => {
   if (!positions || positions.length === 0) {
     return null;
   }
@@ -43,10 +48,10 @@ export const getLatestPosition = (positions?: { date: string; lat: number; lon: 
 };
 
 export const filterMarkers = (
-  markers: Marker[], 
-  searchTerm: string, 
-  selectedFilter: string[], 
-  startDate?: Date, 
+  markers: Marker[],
+  searchTerm: string,
+  selectedFilter: string[],
+  startDate?: Date,
   endDate?: Date
 ) => {
   return markers.filter((marker) => {
@@ -72,8 +77,13 @@ export const filterMarkers = (
     const markerDate = new Date(marker.date);
     const matchesDate =
       (!startDate && !endDate) ||
-      (startDate && !endDate && markerDate.toDateString() === startDate.toDateString()) ||
-      (startDate && endDate && markerDate >= startDate && markerDate <= endDate);
+      (startDate &&
+        !endDate &&
+        markerDate.toDateString() === startDate.toDateString()) ||
+      (startDate &&
+        endDate &&
+        markerDate >= startDate &&
+        markerDate <= endDate);
 
     return matchesSearch && matchesStatus && matchesDate;
   });
@@ -86,7 +96,7 @@ export const processEquipment = (equipment: MergedEquipment) => {
   // Encontra o status correspondente
   const status = equipment.stateHistory?.[0];
   let stateId = null;
-  let statusAtual = 'Sem dados sobre a localização atual do equipamento.';
+  let statusAtual = ' ';
   let ultimaDataEstados = null;
 
   if (status?.states) {

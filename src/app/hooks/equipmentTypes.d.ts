@@ -52,7 +52,6 @@ export interface MergedEquipment {
   stateHistory: EquipmentStateHistory[];
 }
 
-
 //----------------------------------
 
 interface StateData {
